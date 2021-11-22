@@ -56,12 +56,6 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             selectID(request,response);
         }
     }
-    protected Connection getConnection() throws NamingException, SQLException {
-        Context ctx=new InitialContext();
-        DataSource ds=(DataSource) ctx.lookup("java:/comp/env/jdbc/mysql");
-        Connection conn= ds.getConnection();
-        return conn;
-    }
     protected void add(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             response.setContentType("application/json");
@@ -74,18 +68,15 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             String PhoneNumber=request.getParameter("PhoneNumber");
             String IDStatus="true";
             String Password= DigestUtils.shaHex(request.getParameter("PassWord"));
-            Connection conn=getConnection();
-            Statement stmt=conn.createStatement();
-            PreparedStatement pStmt=conn.prepareStatement("select * from userinfo where DtgID=?",ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-            pStmt.setString(1,DtgID);
-            ResultSet rs=pStmt.executeQuery();
-            rs.last();
-            int rsIDSize=rs.getRow();
-            pStmt=conn.prepareStatement("select * from userinfo where PhoneNumber=?",ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-            pStmt.setString(1,PhoneNumber);
-            rs=pStmt.executeQuery();
-            rs.last();
-            int rsPhoneNumberSize=rs.getRow();
+            //判断账号是否重复
+            DBConnection dbConnection=new DBConnection();
+            String sql="select * from userinfo where DtgID='"+DtgID+"'";
+            ArrayList<Map<String,String>>rs=dbConnection.queryForList(sql);
+            int rsIDSize=rs.size();
+            //判断电话是否重复
+            sql="select * from userinfo where PhoneNumber='"+PhoneNumber+"'";
+            rs=dbConnection.queryForList(sql);
+            int rsPhoneNumberSize=rs.size();
             JsonObject jsonContainer =new JsonObject();
             if(rsIDSize!=0){
                 jsonContainer.addProperty("hasID",true);
@@ -100,20 +91,10 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
                 jsonContainer.addProperty("hasPhoneNumber",false);
             }
             if(rsIDSize==0&&rsPhoneNumberSize==0){
-                pStmt=conn.prepareStatement("insert into userinfo(DtgID,LastName,FirstName,Province,City,PhoneNumber,IDStatus,Password) values (?,?,?,?,?,?,?,?)");
-                pStmt.setString(1,DtgID);
-                pStmt.setString(2,LastName);
-                pStmt.setString(3,FirstName);
-                pStmt.setString(4,Province);
-                pStmt.setString(5,City);
-                pStmt.setString(6,PhoneNumber);
-                pStmt.setString(7,IDStatus);
-                pStmt.setString(8,Password);
-                pStmt.executeUpdate();
+                sql="insert into userinfo(DtgID,LastName,FirstName,Province,City,PhoneNumber,IDStatus,Password) values ('"+DtgID+"','"+LastName+"','"+FirstName+"','"+Province+"','"+City+"','"+PhoneNumber+"','"+IDStatus+"','"+Password+"')";
+                dbConnection.update(sql);
             }
-            pStmt.close();
-            stmt.close();
-            conn.close();
+            dbConnection.close();
             PrintWriter writer = response.getWriter();
             writer.write(new Gson().toJson(jsonContainer));
             writer.flush();
@@ -129,15 +110,6 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             String LastName=request.getParameter("LastName");
             String FirstName=request.getParameter("FirstName");
             String PhoneNumber=request.getParameter("PhoneNumber");
-            /*Connection conn=getConnection();
-            Statement stmt=conn.createStatement();
-            PreparedStatement pStmt=conn.prepareStatement("select * from userinfo where PhoneNumber=? and LastName=? and FirstName=?",ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
-            pStmt.setString(1,PhoneNumber);
-            pStmt.setString(2,LastName);
-            pStmt.setString(3,FirstName);
-            ResultSet rs=pStmt.executeQuery();
-            rs.last();
-            int rsSize=rs.getRow();*/
             DBConnection dbConnection=new DBConnection();
             String sql="select * from userinfo where PhoneNumber='"+PhoneNumber+"' and LastName='"+LastName+"' and FirstName='"+FirstName+"'";
             ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
@@ -145,16 +117,11 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             JsonObject jsonContainer =new JsonObject();
             if(rsSize>0){
                 jsonContainer.addProperty("hasID",true);
-                /*rs.first();
-                jsonContainer.addProperty("ID",rs.getString(1));*/
                 jsonContainer.addProperty("ID",rs.get(0).get("DtgID"));
             }
             else{
                 jsonContainer.addProperty("hasID",false);
             }
-            /*pStmt.close();
-            stmt.close();
-            conn.close();*/
             dbConnection.close();
             PrintWriter writer = response.getWriter();
             writer.write(new Gson().toJson(jsonContainer));

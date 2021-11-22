@@ -97,7 +97,7 @@
         <div class="container" style="padding-top: 0rem; padding-left: 5rem; position:relative;">
             <h3>Dtg ID</h3>
             <hr style="margin-bottom: 4rem;">
-            <div style="width: 50%; height: 45rem;">
+            <div style="width: 50%;">
                 <h2 style="font-weight: bold; margin-bottom: 4rem;">登陆时遇到问题？</h2>
                 <form>
                     <div class="div-left">
@@ -109,6 +109,24 @@
                                 </div>
                                 <p style="font-size: 1.6rem; margin-top: 2rem;">如果您忘记了 Dtg ID，可以<a href="findID.jsp">查找 Dtg ID。</a>
                                 </p>
+                            </div>
+                        </div>
+                        <hr>
+                        <p style="font-size: 1.8rem;">重置你的密码</p>
+                        <div>
+                            <div class="form-group">
+                                <div>
+                                    <input type="text" class="form-control" id="DtgpwdIput" placeholder="新密码">
+                                </div>
+                                <br>
+                                <div>
+                                    <input type="text" class="form-control" id="DtgpwdAgainIput" placeholder="确认密码">
+                                </div>
+                                <br>
+                                <div>
+                                    <input type="text" class="form-control" id="DtgEmailMsgIput" placeholder="确认密码">
+                                    <input type="button" class="form-control" id="SendEmailMsgBtn" value="验证邮箱">
+                                </div>
                             </div>
                         </div>
                     </div>
