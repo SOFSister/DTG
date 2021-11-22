@@ -1,0 +1,108 @@
+.bg-dark {
+    background-color: black;
+}
+
+.text-white {
+    color: white;
+}
+
+.text-black {
+    color: black;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-bold {
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+
+footer {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.bar-text {
+    font-weight: bolder;
+    color: black;
+}
+
+hr {
+    border: none;
+    height: 0.1rem;
+    background-color: #696868;
+}
+
+a {
+    color: rgb(7, 7, 7);
+}
+
+a:visited {
+    text-decoration: none;
+    color: rgb(10, 10, 10);
+}
+
+a:hover {
+    color: rgb(252, 85, 49);
+    text-decoration: none;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}
+
+img {
+    width: 50rem;
+    height: 50rem;
+    margin: 0rem 0rem;
+}
+
+.bg-DTG {
+    background: url(../images/大头哥门头照.png);
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: cover;
+    height: 50rem;
+    margin-top: 5rem;
+
+}
+
+.bg-CF {
+    background: url(../images/拜师学艺.png);
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: cover;
+    height: 70rem;
+    margin-top: 5rem;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+
+.bg-MAP {
+    background: url(../images/map.png);
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: cover;
+    height: 70rem;
+    margin-top: 5rem;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+
+.bg-BQ {
+    background: url(../images/版权.png);
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: cover;
+    height: 70rem;
+    margin-top: 5rem;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+#introText {}
