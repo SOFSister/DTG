@@ -55,6 +55,9 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
         else if(action.equals("selectID")){
             selectID(request,response);
         }
+        else if(action.equals("getHasID")){
+            getHasID(request,response);
+        }
     }
     protected void add(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -118,6 +121,31 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             if(rsSize>0){
                 jsonContainer.addProperty("hasID",true);
                 jsonContainer.addProperty("ID",rs.get(0).get("DtgID"));
+            }
+            else{
+                jsonContainer.addProperty("hasID",false);
+            }
+            dbConnection.close();
+            PrintWriter writer = response.getWriter();
+            writer.write(new Gson().toJson(jsonContainer));
+            writer.flush();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void getHasID(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            response.setContentType("application/json");
+            request.setCharacterEncoding("UTF-8");
+            String DtgID=request.getParameter("DtgID");
+            DBConnection dbConnection=new DBConnection();
+            String sql="select * from userinfo where DtgID='"+DtgID+"'";
+            ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
+            int rsSize=rs.size();
+            JsonObject jsonContainer =new JsonObject();
+            if(rsSize>0){
+                jsonContainer.addProperty("hasID",true);
             }
             else{
                 jsonContainer.addProperty("hasID",false);

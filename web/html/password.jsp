@@ -105,27 +105,46 @@
                         <div>
                             <div class="form-group">
                                 <div>
-                                    <input type="text" class="form-control isEmail" id="DtgIDIput" placeholder="Dtg ID">
+                                    <input type="text" class="form-control isEmail" id="DtgIDInput" placeholder="Dtg ID">
                                 </div>
+                                <p style="color:rgb(221, 7, 28); font-size: 0.8rem; visibility: hidden" id="DtgIDErrorMsg" >
+                                    <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                                    不存在此ID
+                                </p>
                                 <p style="font-size: 1.6rem; margin-top: 2rem;">如果您忘记了 Dtg ID，可以<a href="findID.jsp">查找 Dtg ID。</a>
                                 </p>
                             </div>
                         </div>
-                        <hr>
-                        <p style="font-size: 1.8rem;">重置你的密码</p>
-                        <div>
-                            <div class="form-group">
-                                <div>
-                                    <input type="text" class="form-control" id="DtgpwdIput" placeholder="新密码">
-                                </div>
-                                <br>
-                                <div>
-                                    <input type="text" class="form-control" id="DtgpwdAgainIput" placeholder="确认密码">
-                                </div>
-                                <br>
-                                <div>
-                                    <input type="text" class="form-control" id="DtgEmailMsgIput" placeholder="确认密码">
-                                    <input type="button" class="form-control" id="SendEmailMsgBtn" value="验证邮箱">
+                        <div id="afterNextBtn" style="display:none;">
+                            <hr>
+                            <p style="font-size: 1.8rem;">重置你的密码</p>
+                            <div>
+                                <div class="form-group">
+                                    <div>
+                                        <input type="password" id="DtgpwdInput" class="form-control form-textbox-long isPassword" placeholder="密码" data-container="body"
+                                               data-toggle="popover" data-placement="bottom" data-trigger="focus" data-html="true"
+                                               style="margin: 0rem;" data-content='<div style="width:20rem; height:24rem" id="pwdDown"></div>'>
+                                    </div>
+                                    <br>
+                                    <div>
+                                        <input type="password" class="form-control isAgainPwd" id="DtgpwdAgainInput" placeholder="确认密码">
+                                    </div>
+                                    <p style="color:rgb(221, 7, 28); font-size: 0.8rem; visibility: hidden" id="pwdErrorMsg" >
+                                        <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                                        您输入的密码不匹配
+                                    </p>
+                                    <div>
+                                        <div style="display: inline-block">
+                                            <input type="text" class="form-control isEmpty" id="DtgEmailMsgInput" placeholder="验证码">
+                                        </div>
+                                        <div style="display: inline-block">
+                                            <input type="button" class="form-control" id="SendEmailMsgBtn" value="验证邮箱">
+                                        </div>
+                                    </div>
+                                    <p style="color:rgb(221, 7, 28); font-size: 0.8rem; visibility: hidden" id="codeErrorMsg" >
+                                        <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                                        您输入的验证码不匹配
+                                    </p>
                                 </div>
                             </div>
                         </div>

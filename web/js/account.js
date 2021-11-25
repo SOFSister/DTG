@@ -239,6 +239,15 @@ function addCheckInput(){
         else{
             $(this).parent().removeClass("has-success").addClass("has-error");
         }
+        var agaginPwdValue=$("#inputAgainPwd").val();
+        if(value!=agaginPwdValue){
+            $("#pwdErrorMsg").css("visibility","visible");
+            $("#inputAgainPwd").parent().removeClass("has-success").addClass("has-error");
+        }
+        else{
+            $("#pwdErrorMsg").css("visibility","hidden");
+            $("#inputAgainPwd").parent().addClass("has-success").removeClass("has-error");
+        }
     });
     $(".isPassword").focus(function (){
         var value=$(this).val();
@@ -282,6 +291,7 @@ function addCheckInput(){
                 url: "SendEmailServlet",
                 type: "POST",
                 data: {
+                    "action":"createAccount",
                     "to":$("#inputEmail").val()
                 },
                 dataType: "text",
