@@ -15,7 +15,50 @@ function addCheckInput(){
             $("#nextBtn").removeAttr("disabled");
             $("#nextBtn").unbind('click');
             $("#nextBtn").click(function (){
+                $.ajax({
+                    url: "CheckChangePwdEmailCode",
+                    type: "POST",
+                    data: {
+                        "EmailCode":$("#DtgEmailMsgInput").val(),
+                        "EmailID":$("#DtgIDInput").val()
+                    },
+                    dataType: "json",
+                    success: function (data){
+                        var chats=eval(data);
+                        if(chats.emailCode){
+                            $("#codeErrorMsg").css("visibility","hidden");
+                            $.ajax({
+                                url: "ChangeUserInfoDataBaseServlet",
+                                type: "POST",
+                                data: {
+                                    "action":"changePwd",
+                                    "DtgID":$("#DtgIDInput").val(),
+                                    "PassWord":$("#DtgpwdInput").val()
+                                },
+                                dataType: "text",
+                                success: function (data){
+                                    $("#afterNextBtn").append('<div class="alert alert-success" role="alert"><strong>重置成功，</strong>即将跳转到登录界面...</div>');
+                                    setTimeout(function (){
+                                        window.location.href="login.jsp";
+                                    },2000);
+                                },
+                                error:function (){
+                                    alert("请求失败");
+                                }
+                            });
+                        }
+                        else{
+                            $("#codeErrorMsg").css("visibility","visible");
+                            $("#DtgEmailMsgInput").parent().removeClass("has-success").addClass("has-error");
+                            $("#DtgEmailMsgInput").focus();
 
+                        }
+                        $("#nextBtn").attr("disabled","disabled");
+                    },
+                    error:function (){
+                        alert("请求失败");
+                    }
+                });
             });
         }
         else{

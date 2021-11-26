@@ -58,6 +58,12 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
         else if(action.equals("getHasID")){
             getHasID(request,response);
         }
+        else if(action.equals("changePwd")){
+            changePwd(request,response);
+        }
+        else if(action.equals("getHasIDAndHasPwd")){
+            getHasIDAndHasPwd(request,response);
+        }
     }
     protected void add(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -149,6 +155,48 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             }
             else{
                 jsonContainer.addProperty("hasID",false);
+            }
+            dbConnection.close();
+            PrintWriter writer = response.getWriter();
+            writer.write(new Gson().toJson(jsonContainer));
+            writer.flush();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void changePwd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            request.setCharacterEncoding("UTF-8");
+            String DtgID=request.getParameter("DtgID");
+            String Password= DigestUtils.shaHex(request.getParameter("PassWord"));
+            DBConnection dbConnection=new DBConnection();
+            String sql="update userinfo set Password='"+Password+"' where DtgID='"+DtgID+"'";
+            dbConnection.update(sql);
+            dbConnection.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void getHasIDAndHasPwd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            response.setContentType("application/json");
+            request.setCharacterEncoding("UTF-8");
+            String DtgID=request.getParameter("DtgID");
+            String Password= DigestUtils.shaHex(request.getParameter("PassWord"));
+            DBConnection dbConnection=new DBConnection();
+            String sql="select * from userinfo where DtgID='"+DtgID+"' and Password='"+Password+"'";
+            ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
+            int rsSize=rs.size();
+            JsonObject jsonContainer =new JsonObject();
+            if(rsSize>0){
+                jsonContainer.addProperty("isLogin",true);
+                HttpSession session=request.getSession();
+                session.setAttribute("loginedID",DtgID);
+            }
+            else{
+                jsonContainer.addProperty("isLogin",false);
             }
             dbConnection.close();
             PrintWriter writer = response.getWriter();

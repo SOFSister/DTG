@@ -30,7 +30,7 @@ hr{
 	height: 0.1rem;
 	background-color: #0a0a0a;
 }
-#DtgIDIput,#DtgpwdIput{
+#DtgIDInput,#DtgpwdInput{
     border-width: 0.5rem;
     width: 40rem;
     height: 6rem;
