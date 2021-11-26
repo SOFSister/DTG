@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-@WebServlet("/html/ChangeUserInfoDataBaseServlet")
+@WebServlet({"/html/ChangeUserInfoDataBaseServlet","/ChangeUserInfoDataBaseServlet"})
 public class ChangeUserInfoDataBaseServlet extends HttpServlet{
     private static final long serialVersionUID = 1L;
     public ChangeUserInfoDataBaseServlet() {
@@ -63,6 +63,9 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
         }
         else if(action.equals("getHasIDAndHasPwd")){
             getHasIDAndHasPwd(request,response);
+        }
+        else if(action.equals("getFirstName")){
+            getFirstName(request,response);
         }
     }
     protected void add(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -198,6 +201,25 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             else{
                 jsonContainer.addProperty("isLogin",false);
             }
+            dbConnection.close();
+            PrintWriter writer = response.getWriter();
+            writer.write(new Gson().toJson(jsonContainer));
+            writer.flush();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void getFirstName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            response.setContentType("application/json");
+            request.setCharacterEncoding("UTF-8");
+            String DtgID=request.getParameter("DtgID");
+            DBConnection dbConnection=new DBConnection();
+            String sql="select FirstName from userinfo where DtgID='"+DtgID+"'";
+            ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
+            JsonObject jsonContainer =new JsonObject();
+            jsonContainer.addProperty("FirstName",rs.get(0).get("FirstName"));
             dbConnection.close();
             PrintWriter writer = response.getWriter();
             writer.write(new Gson().toJson(jsonContainer));

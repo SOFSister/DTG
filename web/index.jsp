@@ -62,10 +62,10 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="nav-item">
-          <a tabindex="0" class="btn  btn-outline-dark navbar-btn" role="button" type="submit"
+          <a id="cart" tabindex="0" class="btn  btn-outline-dark navbar-btn" role="button" type="submit"
              data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
              data-html="true" style="margin: 0rem;" data-content='
-                            <div style="width:20rem; height:20rem">
+                            <div style="width:20rem; height:20rem" id="loginChange">
                                 <div class="text-center">
                                     <p style="padding-top:1rem;">你的购物车是空的</p>
                                     <button class="btn btn-primary" style="width:20rem;">结账</button>

@@ -23,7 +23,6 @@ $(function () {
             success: function (data){
                 var chats=eval(data);
                 if(chats.isLogin){//登录成功
-                    console.log("登录成功");
                     window.location.href="../index.jsp";
                 }
                 else{
