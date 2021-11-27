@@ -65,7 +65,7 @@
           <a id="cart" tabindex="0" class="btn  btn-outline-dark navbar-btn" role="button" type="submit"
              data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
              data-html="true" style="margin: 0rem;" data-content='
-                            <div style="width:20rem; height:20rem" id="loginChange">
+                            <div style="width:20rem; height:20rem">
                                 <div class="text-center">
                                     <p style="padding-top:1rem;">你的购物车是空的</p>
                                     <button class="btn btn-primary" style="width:20rem;">结账</button>
@@ -77,7 +77,7 @@
                                     </span>
                                 </div>
                                 <hr>
-                                <div>
+                                <div id="loginChange">
                                     <span class="glyphicon glyphicon-circle-arrow-right" aria-hidden="true">
                                         <a href="html/login.jsp" class="text-black">登录</a>
                                     </span>
@@ -107,7 +107,7 @@
        style="margin-top: 15rem;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form action="">
+        <form id="modalForm" action="">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                     aria-hidden="true">&times;</span></button>
@@ -178,7 +178,7 @@
         <div class="thumbnail">
           <img src="images/野生桂鱼面.jpg" alt="...">
           <div class="caption text-center">
-            <h3>大排面</h3>
+            <h3 id="0">大排面</h3>
             <p>
               <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
               <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
@@ -202,7 +202,7 @@
         <div class="thumbnail">
           <img class="img-size" src="images/大排面.jpg" alt="..." >
           <div class="caption text-center">
-            <h3>小排面</h3>
+            <h3 id="1">小排面</h3>
             <p>
               <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
               <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
@@ -226,7 +226,7 @@
         <div class="thumbnail">
           <img src="images/野生桂鱼面.jpg" alt="...">
           <div class="caption text-center">
-            <h3>咸菜肉丝面</h3>
+            <h3 id="2">咸菜肉丝面</h3>
             <p>
               <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
               <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
