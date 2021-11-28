@@ -1,6 +1,7 @@
 package DTGservlet;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import products.Product;
 
@@ -66,7 +67,7 @@ public class ProductsServlet extends HttpServlet{
             products.add(pd);
             session.setAttribute("products",products);
             /*for (Product val:products) {
-                System.out.print(val.getName());
+                System.out.println(val.getName());
             }*/
         }
         catch (Exception e){
@@ -75,22 +76,38 @@ public class ProductsServlet extends HttpServlet{
     }
     protected void getProducts(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            //System.out.println("我进来了");
             HttpSession session = request.getSession();
+            response.setContentType("application/json;charset=UTF-8");
             request.setCharacterEncoding("UTF-8");
             ArrayList<Product> products= (ArrayList<Product>) session.getAttribute("products");
-            String name=request.getParameter("name");
-            int id= Integer.parseInt(request.getParameter("id"));
-            String need=request.getParameter("need");
-            //System.out.print(need);
-            Product pd=new Product(id,name,need);
             if(products==null){
-                products=new ArrayList<Product>();
+                JsonObject jsonContainer =new JsonObject();
+                jsonContainer.addProperty("empty",true);
+                PrintWriter writer = response.getWriter();
+                writer.write(new Gson().toJson(jsonContainer));
+                writer.flush();
             }
-            products.add(pd);
-            session.setAttribute("products",products);
-            /*for (Product val:products) {
-                System.out.print(val.getName());
-            }*/
+            else{
+                Map<String, Integer> map=new HashMap<String, Integer>();
+                for (Product val:products) {
+                    String pd=String.valueOf(val.getId())+"!"+val.getNeed();
+                    if(map.containsKey(pd)){
+                        int cnt=map.get(pd);
+                        map.put(pd,cnt+1);
+                    }
+                    else{
+                        map.put(pd,1);
+                    }
+                }
+                //System.out.println(map.size());
+                Gson gson = new GsonBuilder().create();
+                String jsonStr=gson.toJson(map);
+                //System.out.print(jsonStr);
+                PrintWriter writer = response.getWriter();
+                writer.write(jsonStr);
+                writer.flush();
+            }
         }
         catch (Exception e){
             e.printStackTrace();

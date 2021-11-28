@@ -43,14 +43,18 @@
         <form>
           <div class="form-group">
             <div style="height: 10rem;">
-              <input type="text" class="form-control" id="DtgIDIput" placeholder="Adm Dtg ID">
+              <input type="text" name="" oninput="value=value.replace(/[\u4e00-\u9fa5d]/g,'')" class="form-control" id="DtgIDInput" placeholder="Dtg ID" >
             </div>
-            <div style="height: 8rem;">
-              <input type="password" class="form-control" id="DtgpwdIput" placeholder="密码">
+            <div style="height: 6rem;">
+              <input type="password" class="form-control" id="DtgpwdInput" placeholder="密码">
             </div>
+            <p style="color:rgb(221, 7, 28); font-size: 0.8rem; visibility: hidden" id="loginErrorMsg" >
+              <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+              Dtg ID 错误或密码错误
+            </p>
           </div>
           <div style="height: 8rem;">
-            <input type="submit" value="登录" class="btn btn-default" id="DtgIDSubmit">
+            <input type="button" value="登录" class="btn btn-default" id="DtgIDSubmit">
           </div>
         </form>
       </div>

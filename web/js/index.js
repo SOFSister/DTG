@@ -121,17 +121,11 @@ $(function () {
         $('[class="col-sm-6 col-md-4"]:nth-of-type('+($selectedLocation+1)+') h4:nth-of-type(2)').html((1+Number($nowVal)));//设置新的商品个数+1
         //商品存入session
         //name
-        //console.log($('[class="col-sm-6 col-md-4"]:nth-of-type('+($selectedLocation+1)+') h3').html());
         var productName=$('[class="col-sm-6 col-md-4"]:nth-of-type('+($selectedLocation+1)+') h3').html();
         //id
-        //console.log($('[class="col-sm-6 col-md-4"]:nth-of-type('+($selectedLocation+1)+') h3').attr("id"));
         var productID=$('[class="col-sm-6 col-md-4"]:nth-of-type('+($selectedLocation+1)+') h3').attr("id");
         //needs
         var values=$("#modalForm").serializeArray();
-        /*console.log(values[0].name,values[0].value);
-        console.log(values[1].name,values[1].value);
-        console.log(values[2].name,values[2].value);
-        console.log(values[3].name,values[3].value);*/
         var need=getNeeds(values);
 
         $.ajax({
@@ -164,5 +158,58 @@ $(function () {
                 '                                    </span>';
             $("#loginChange").html(htmlStr);
         }
+        $.ajax({
+            url: "ProductsServlet",
+            type: "POST",
+            data: {
+                "action":"getProducts",
+            },
+            async:false,
+            dataType: "json",
+            success: function (data){
+                var chats=eval(data);
+                if(chats.empty){
+                   console.log("空");
+                }
+                else{
+                    $("#cartItems").html("");
+                    var sumCart=0;
+                    for (var prop in data){
+                        var id="";
+                        var need="";
+                        var flag=false;
+                        for(var i=0;i<prop.length;++i){
+                            if(prop[i]=='!'){
+                                flag=true;
+                                continue;
+                            }
+                            if(!flag){
+                                id+=prop[i];
+                            }
+                            else{
+                                need+=prop[i];
+                            }
+                        }
+                        sumCart+=data[prop];
+                        $("#cartItems").append('<div class="cart'+id+'">\n' +
+                            '                 <h3>\n' +
+                            '                 大排面\n' +
+                            '                 <button class="btn btn-default btn-xs div-line">\n' +
+                            '                 <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>\n' +
+                            '                 </button>\n' +
+                            '                 </h3>\n' +
+                            '                 <h5 style="display: inline-block;">'+need+'&nbsp;x</h5>\n' +
+                            '                 <h4 style="display: inline-block;">'+data[prop]+'</h4>\n' +
+                            '                 </div>\n' +
+                            '                 <hr>');
+                        //console.log("jsonObj[" + prop + "]=" + data[prop]);
+                    }
+                    $("#sumCart").html('购物车（'+sumCart+'）');
+                }
+            },
+            error:function (){
+                alert("请求失败");
+            }
+        });
     });
 });

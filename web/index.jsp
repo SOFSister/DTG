@@ -65,15 +65,16 @@
           <a id="cart" tabindex="0" class="btn  btn-outline-dark navbar-btn" role="button" type="submit"
              data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
              data-html="true" style="margin: 0rem;" data-content='
-                            <div style="width:20rem; height:20rem">
-                                <div class="text-center">
+                            <div style="width:20rem;">
+                                <div style="max-height:20rem;overflow-y:auto;" class="text-center" id="cartItems">
                                     <p style="padding-top:1rem;">你的购物车是空的</p>
-                                    <button class="btn btn-primary" style="width:20rem;">结账</button>
                                 </div>
+                                <br>
+                                <button class="btn btn-primary" style="width:20rem;">结账</button>
                                 <hr>
                                 <div>
                                     <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true">
-                                        <a href="" class="text-black">购物车（0）</a>
+                                        <a class="text-black" id="sumCart">购物车（0）</a>
                                     </span>
                                 </div>
                                 <hr>
@@ -187,9 +188,6 @@
               <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
             </p>
             <h4>￥16</h4>
-            <button type="button" class="btn btn-default" style="margin-right: 1rem;">
-              <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-            </button>
             <h4 style="display: inline-block;">0</h4>
             <button type="button" class="btn btn-default" style="margin-left: 1rem;" data-toggle="modal"
                     data-target="#myModal">
@@ -211,9 +209,6 @@
               <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
             </p>
             <h4>￥16</h4>
-            <button type="button" class="btn btn-default" style="margin-right: 1rem;">
-              <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-            </button>
             <h4 style="display: inline-block;">0</h4>
             <button type="button" class="btn btn-default" style="margin-left: 1rem;" data-toggle="modal"
                     data-target="#myModal">
@@ -235,9 +230,6 @@
               <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
             </p>
             <h4>￥16</h4>
-            <button type="button" class="btn btn-default" style="margin-right: 1rem;">
-              <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-            </button>
             <h4 style="display: inline-block;">0</h4>
             <button type="button" class="btn btn-default" style="margin-left: 1rem;" data-toggle="modal"
                     data-target="#myModal">

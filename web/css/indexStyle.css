@@ -64,3 +64,6 @@ a:hover{
 label{
     margin-left: 2rem;
 }
+div-line{
+    display: inline-block;
+}
