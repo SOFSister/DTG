@@ -1,4 +1,6 @@
-<%--
+<%@ page import="db.DBConnection" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Map" %><%--
   Created by IntelliJ IDEA.
   User: 87428
   Date: 2021/11/17
@@ -22,6 +24,11 @@
 </head>
 
 <body>
+<%
+    DBConnection dbConnection=new DBConnection();
+    String sql="select * from productinfo";
+    ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
+%>
 <!--手机导航栏-->
 <div id="mobile-menu" class="mobile-nav">
     <ul>
@@ -33,7 +40,7 @@
 </div>
 <div class="container" id="main" style="overflow-y:auto;">
     <div>
-        <form action="">
+        <form action="UploadServlet" method="post" enctype="multipart/form-data" name="addProductForm" id="addProductForm">
             <h1 style="display: inline-block;">查找/添加产品</h1>
             <input type="reset" value="重置" class="btn btn-primary" style="height: 4rem;width: 6rem;margin-top: -1rem;margin-left: 2rem;" id="resetBtn1">
             <table>
@@ -47,14 +54,14 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="text" name="" id="nameText" style="width: 100%;height: 100%;">
+                        <input type="text" name="name" id="nameText" style="width: 100%;height: 100%;">
                     </td>
                     <td>
-                        <input type="text" name="" id="priceText" oninput="value=value.replace(/[^\d]/g,'')"
+                        <input type="text" name="price" id="priceText" oninput="value=value.replace(/[^\d]/g,'')"
                                style="width: 100%;height: 100%;">
                     </td>
                     <td>
-                        <select name="" id="evaluationText" style="width: 100%;height: 100%;">
+                        <select name="evaluation" id="evaluationText" style="width: 100%;height: 100%;">
                             <option value="">--请选择--</option>
                             <option value="5">5</option>
                             <option value="4">4</option>
@@ -63,17 +70,17 @@
                         </select>
                     </td>
                     <td>
-                        <input type="file" name="" id="imgText" style="width: 200%;height: 100%;">
+                        <input type="file" name="file" id="imgText" style="width: 200%;height: 100%;">
                     </td>
                     <td>
-                        <select name="" id="statusText" style="width: 100%;height: 100%;">
+                        <select name="status" id="statusText" style="width: 100%;height: 100%;">
                             <option value="">--请选择--</option>
                             <option value="启用">启用</option>
                             <option value="禁用">禁用</option>
                         </select>
                     </td>
                     <td>
-                        <input type="button" value="添加" class="btn btn-primary addBtn">
+                        <input type="submit" value="添加" class="btn btn-primary addBtn">
                         <input type="button" value="查找" class="btn btn-primary findBtn">
                     </td>
                 </tr>
@@ -94,6 +101,20 @@
                 <th>产品状态</th>
                 <th>产品操作</th>
             </tr>
+            <%
+                for (Map<String,String> item: rs) {%>
+            <tr>
+                <td><%=item.get("ProductName")%></td>
+                <td><%=item.get("ProductPrice")%></td>
+                <td><%=item.get("ProductEvaluation")%></td>
+                <td>无</td>
+                <td><%=item.get("ProductStatus")%></td>
+                <td>
+                    <button class="btn btn-primary editBtn">编辑</button>
+                    <button class="btn btn-primary deleBtn">删除</button>
+                </td>
+            </tr>
+            <%  }%>
             <tr>
                 <td>小排面</td>
                 <td>20</td>

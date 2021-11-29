@@ -200,7 +200,7 @@ function add() {
 $(function () {
     $(".editBtn").click(edit);
     $(".deleBtn").click(dele);
-    $(".addBtn").click(add);
+    //$(".addBtn").click(add);
     var changed=false;
     $("#resetBtn1").click(function (e) { 
         changed=false;
