@@ -1,4 +1,6 @@
-<%--
+<%@ page import="db.DBConnection" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.ArrayList" %><%--
   Created by IntelliJ IDEA.
   User: 87428
   Date: 2021/11/17
@@ -22,6 +24,11 @@
 </head>
 
 <body>
+<%
+    DBConnection dbConnection=new DBConnection();
+    String sql="select * from userinfo";
+    ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
+%>
 <!--手机导航栏-->
 <div id="mobile-menu" class="mobile-nav">
     <ul>
@@ -78,7 +85,7 @@
                         </select>
                     </td>
                     <td>
-                        <input type="button" value="查询" class="btn btn-primary">
+                        <input type="button" value="查询" class="btn btn-primary" id="queryBtn">
                     </td>
                 </tr>
             </table>
@@ -87,7 +94,7 @@
     <hr>
     <div>
         <h1 style="display: inline-block;">账户列表</h1>
-        <button class="btn btn-primary"
+        <button id="resetBtn" class="btn btn-primary"
                 style="height: 4rem;width: 6rem;margin-top: -1rem;margin-left: 2rem;">重置</button>
         <table id="productList">
             <tr>
@@ -100,30 +107,25 @@
                 <th>账户状态</th>
                 <th>账户操作</th>
             </tr>
-            <tr>
-                <td>874280179@qq.com</td>
-                <td>魏</td>
-                <td>依洋</td>
-                <td>浙江</td>
-                <td>嘉兴</td>
-                <td>19106856660</td>
-                <td>启用</td>
+            <%
+                for (Map<String,String> item: rs) {
+            %>
+            <tr id="<%=item.get("DtgID")%>" class="users">
+                <td><%=item.get("DtgID")%></td>
+                <td><%=item.get("LastName")%></td>
+                <td><%=item.get("FirstName")%></td>
+                <td><%=item.get("Province")%></td>
+                <td><%=item.get("City")%></td>
+                <td><%=item.get("PhoneNumber")%></td>
+                <td><%=item.get("IDStatus")%></td>
                 <td>
                     <button class="btn btn-primary editBtn">编辑</button>
+                    <button class="btn btn-primary deleBtn">删除</button>
                 </td>
             </tr>
-            <tr>
-                <td>874280179@qq.com</td>
-                <td>魏</td>
-                <td>依洋</td>
-                <td>浙江</td>
-                <td>嘉兴</td>
-                <td>19106856660</td>
-                <td>启用</td>
-                <td>
-                    <button class="btn btn-primary editBtn">编辑</button>
-                </td>
-            </tr>
+            <%  }
+                dbConnection.close();
+            %>
         </table>
     </div>
 </div>

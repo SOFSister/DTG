@@ -41,7 +41,7 @@
 <div class="container" id="main" style="overflow-y:auto;">
     <div>
         <form action="UploadServlet" method="post" enctype="multipart/form-data" name="addProductForm" id="addProductForm">
-            <h1 style="display: inline-block;">查找/添加产品</h1>
+            <h1 style="display: inline-block;">添加产品</h1>
             <input type="reset" value="重置" class="btn btn-primary" style="height: 4rem;width: 6rem;margin-top: -1rem;margin-left: 2rem;" id="resetBtn1">
             <table>
                 <tr>
@@ -81,7 +81,6 @@
                     </td>
                     <td>
                         <input type="submit" value="添加" class="btn btn-primary addBtn">
-                        <input type="button" value="查找" class="btn btn-primary findBtn">
                     </td>
                 </tr>
             </table>
@@ -90,8 +89,6 @@
     <hr>
     <div>
         <h1 style="display: inline-block;">产品列表</h1>
-        <button class="btn btn-primary"
-                style="height: 4rem;width: 6rem;margin-top: -1rem;margin-left: 2rem;">重置</button>
         <table id="productList">
             <tr>
                 <th>产品名称</th>
@@ -102,41 +99,24 @@
                 <th>产品操作</th>
             </tr>
             <%
-                for (Map<String,String> item: rs) {%>
-            <tr>
+                for (Map<String,String> item: rs) {
+                    sql="select FilePath from productinfo,files where ProductImgName='"+item.get("ProductImgName")+"' and ProductImgName=FileName";
+                    ArrayList<Map<String,String>> imgUrl=dbConnection.queryForList(sql);
+            %>
+            <tr id="<%=item.get("ProductID")%>">
                 <td><%=item.get("ProductName")%></td>
                 <td><%=item.get("ProductPrice")%></td>
                 <td><%=item.get("ProductEvaluation")%></td>
-                <td>无</td>
+                <td><img src="../<%=imgUrl.get(0).get("FilePath")%>" alt="" style="width: 50%;height: 100%"></td>
                 <td><%=item.get("ProductStatus")%></td>
                 <td>
                     <button class="btn btn-primary editBtn">编辑</button>
                     <button class="btn btn-primary deleBtn">删除</button>
                 </td>
             </tr>
-            <%  }%>
-            <tr>
-                <td>小排面</td>
-                <td>20</td>
-                <td>4</td>
-                <td>无</td>
-                <td>启用</td>
-                <td>
-                    <button class="btn btn-primary editBtn">编辑</button>
-                    <button class="btn btn-primary deleBtn">删除</button>
-                </td>
-            </tr>
-            <tr>
-                <td>小排面</td>
-                <td>20</td>
-                <td>4</td>
-                <td>无</td>
-                <td>启用</td>
-                <td>
-                    <button class="btn btn-primary editBtn">编辑</button>
-                    <button class="btn btn-primary deleBtn">删除</button>
-                </td>
-            </tr>
+            <%  }
+                dbConnection.close();
+            %>
         </table>
     </div>
 </div>

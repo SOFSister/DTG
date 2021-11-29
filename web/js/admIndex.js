@@ -2,6 +2,32 @@ var filePath, fileFormat, src = "";
 var lastEditBtn = "";
 
 function mustEnter(obj) {
+    var ischanged=false;
+    //后端改变
+    $.ajax({
+        url: "ChangeProductInfoDataBaseServlet",
+        type: "POST",
+        async:false,
+        data: {
+            "action":"updateInfo",
+            "ID":$(obj).parent().parent().attr("id"),
+            "ProductName":$(obj).parent().prev().prev().prev().prev().prev().children().val(),
+            "ProductPrice":$(obj).parent().prev().prev().prev().prev().children().val(),
+            "ProductEvaluation":$(obj).parent().prev().prev().prev().children().val(),
+            "ProductStatus":$(obj).parent().prev().children().val()
+        },
+        dataType: "text",
+        success: function (data){
+            ischanged=true;
+        },
+        error:function (){
+            alert("请求失败");
+        }
+    });
+    if(!ischanged){
+        return;
+    }
+    //前端改变
     $(obj).html("编辑");
     $(obj).removeClass("enterBtn").removeClass("btn-success").addClass("editBtn").addClass("btn-primary");
     $(obj).unbind('click');
@@ -21,7 +47,7 @@ function mustEnter(obj) {
     var preEvaluationText = $(tdEvaluationObj).children().val();
     $(tdEvaluationObj).html(preEvaluationText);
 
-    //产品图片
+    /*//产品图片
     var tdImgObj = $(obj).parent().prev().prev();
     if (src == "" || src == undefined) {
         $(tdImgObj).html("无");
@@ -33,7 +59,7 @@ function mustEnter(obj) {
             .height(tdImgObj.height())
             .appendTo(tdImgObj);
         $(inputImgObj).attr('src', src).attr('data-url', filePath);
-    }
+    }*/
     //产品状态
     var tdStatusObj = $(obj).parent().prev();
     var preStatusText = $(tdStatusObj).children().val();
@@ -41,6 +67,32 @@ function mustEnter(obj) {
 }
 
 function enter(params) {
+    var ischanged=false;
+    //后端改变
+    $.ajax({
+        url: "ChangeProductInfoDataBaseServlet",
+        type: "POST",
+        async:false,
+        data: {
+            "action":"updateInfo",
+            "ID":$(this).parent().parent().attr("id"),
+            "ProductName":$(this).parent().prev().prev().prev().prev().prev().children().val(),
+            "ProductPrice":$(this).parent().prev().prev().prev().prev().children().val(),
+            "ProductEvaluation":$(this).parent().prev().prev().prev().children().val(),
+            "ProductStatus":$(this).parent().prev().children().val()
+        },
+        dataType: "text",
+        success: function (data){
+            ischanged=true;
+        },
+        error:function (){
+            alert("请求失败");
+        }
+    });
+    if(!ischanged){
+        return;
+    }
+    //前端改变
     $(this).html("编辑");
     $(this).removeClass("enterBtn").removeClass("btn-success").addClass("editBtn").addClass("btn-primary");
     $(this).unbind('click');
@@ -66,7 +118,7 @@ function enter(params) {
     var preEvaluationText = $(tdEvaluationObj).children().val();
     $(tdEvaluationObj).html(preEvaluationText);
 
-    //产品图片
+    /*//产品图片
     var tdImgObj = $(this).parent().prev().prev();
     if (src == "" || src == undefined) {
         $(tdImgObj).html("无");
@@ -78,7 +130,7 @@ function enter(params) {
             .height(tdImgObj.height())
             .appendTo(tdImgObj);
         $(inputImgObj).attr('src', src).attr('data-url', filePath);
-    }
+    }*/
     //产品状态
     var tdStatusObj = $(this).parent().prev();
     var preStatusText = $(tdStatusObj).children().val();
@@ -86,7 +138,8 @@ function enter(params) {
 }
 
 function edit(params) {
-    if (lastEditBtn != $(this)) {
+    if ($(lastEditBtn).parent().parent().attr("id") != $(this).parent().parent().attr("id")&&lastEditBtn!="") {
+        //console.log("和上次不同");
         mustEnter(lastEditBtn);
         src = "";
     }
@@ -105,7 +158,7 @@ function edit(params) {
     inputNameObj
         .width(tdNameObj.width())
         //设置文本框宽度与td相同
-        .height(tdNameObj.height())
+        //.height(tdNameObj.height()*0.5)
         .val(preNameText)
         .appendTo(tdNameObj);
 
@@ -116,11 +169,10 @@ function edit(params) {
     tdPriceObj.html(""); //清空td中的所有元素
     inputPriceObj
         .width(tdPriceObj.width())
-        .height(tdPriceObj.height())
+        //.height(tdPriceObj.height())
         .val(prePriceText)
         .appendTo(tdPriceObj)
         .bind("input propertychange", function () {
-            console.log('changed');
             this.value=this.value.replace(/[^\d]/g,'')
         });
 
@@ -131,18 +183,18 @@ function edit(params) {
     tdEvaluationObj.html(""); //清空td中的所有元素
     inputEvaluationObj
         .width(tdEvaluationObj.width())
-        .height(tdEvaluationObj.height())
+        //.height(tdEvaluationObj.height())
         .val(preEvaluationText)
         .appendTo(tdEvaluationObj);
 
-    //产品图片
+    /*//产品图片
     var tdImgObj = $(this).parent().prev().prev();
     src = tdImgObj.children().attr("src");
     var inputImgObj = $("<input type='file'/>");
     tdImgObj.html(""); //清空td中的所有元素
     inputImgObj
         .width((tdImgObj.width()))
-        .height(tdImgObj.height())
+        //.height(tdImgObj.height())
         .appendTo(tdImgObj);
     $(inputImgObj).on('change', function () {
         filePath = $(this).val(); //获取到input的value，里面是文件的路径
@@ -153,8 +205,8 @@ function edit(params) {
             $(this).val("");
             return;
         }
-        src = window.URL.createObjectURL(this.files[0]); //转成可以在本地预览的格式
-    });
+        //src = window.URL.createObjectURL(this.files[0]); //转成可以在本地预览的格式
+    });*/
     //产品状态
     var tdStatusObj = $(this).parent().prev();
     var preStatusText = tdStatusObj.html();
@@ -162,12 +214,35 @@ function edit(params) {
     tdStatusObj.html(""); //清空td中的所有元素
     inputStatusObj
         .width(tdStatusObj.width())
-        .height(tdStatusObj.height())
+        //.height(tdStatusObj.height())
         .val(preStatusText)
         .appendTo(tdStatusObj);
 }
 
 function dele() {
+    //后端删除
+    var ischanged=false;
+    //后端改变
+    $.ajax({
+        url: "ChangeProductInfoDataBaseServlet",
+        type: "POST",
+        async:false,
+        data: {
+            "action":"deleteInfo",
+            "ID":$(this).parent().parent().attr("id")
+        },
+        dataType: "text",
+        success: function (data){
+            ischanged=true;
+        },
+        error:function (){
+            alert("请求失败");
+        }
+    });
+    if(!ischanged){
+        return;
+    }
+    //前端删除
     $(this).parent().parent().remove();
 }
 
@@ -197,10 +272,14 @@ function add() {
     $(".editBtn").click(edit);
     $(".deleBtn").click(dele);
 }
+function find(){
+
+}
 $(function () {
     $(".editBtn").click(edit);
     $(".deleBtn").click(dele);
     //$(".addBtn").click(add);
+    //$(".findBtn").click(find);
     var changed=false;
     $("#resetBtn1").click(function (e) { 
         changed=false;

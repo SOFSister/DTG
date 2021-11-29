@@ -67,6 +67,12 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
         else if(action.equals("getFirstName")){
             getFirstName(request,response);
         }
+        else if(action.equals("updateUserinfo")){
+            updateUserinfo(request,response);
+        }
+        else if(action.equals("deleteUserInfo")){
+            deleteUserInfo(request,response);
+        }
     }
     protected void add(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -78,7 +84,7 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             String Province=request.getParameter("Province");
             String City=request.getParameter("City");
             String PhoneNumber=request.getParameter("PhoneNumber");
-            String IDStatus="true";
+            String IDStatus="启用";
             String Password= DigestUtils.shaHex(request.getParameter("PassWord"));
             //判断账号是否重复
             DBConnection dbConnection=new DBConnection();
@@ -224,6 +230,38 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             PrintWriter writer = response.getWriter();
             writer.write(new Gson().toJson(jsonContainer));
             writer.flush();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void updateUserinfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            request.setCharacterEncoding("UTF-8");
+            String DtgID=request.getParameter("DtgID");
+            String LastName=request.getParameter("LastName");
+            String FirstName=request.getParameter("FirstName");
+            String Province=request.getParameter("Province");
+            String City=request.getParameter("City");
+            String PhoneNumber=request.getParameter("PhoneNumber");
+            String IDStatus=request.getParameter("IDStatus");
+            DBConnection dbConnection=new DBConnection();
+            String sql="update userinfo set LastName='"+LastName+"',FirstName='"+FirstName+"',Province='"+Province+"',City='"+City+"',PhoneNumber='"+PhoneNumber+"',IDStatus='"+IDStatus+"' where DtgID='"+DtgID+"'";
+            dbConnection.update(sql);
+            dbConnection.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void deleteUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            request.setCharacterEncoding("UTF-8");
+            String DtgID=request.getParameter("DtgID");
+            DBConnection dbConnection=new DBConnection();
+            String sql="delete from userinfo where DtgID='"+DtgID+"'";
+            dbConnection.update(sql);
+            dbConnection.close();
         }
         catch (Exception e){
             e.printStackTrace();
