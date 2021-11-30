@@ -43,8 +43,7 @@ public class LogoutServlet extends HttpServlet{
         // TODO Auto-generated method stub
         try {
             HttpSession session = request.getSession();
-            request.setCharacterEncoding("UTF-8");
-            session.setAttribute("loginedID","");
+            session.invalidate();
             response.sendRedirect("index.jsp");
         }
         catch (Exception e){

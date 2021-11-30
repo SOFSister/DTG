@@ -3,6 +3,7 @@ package DTGservlet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import db.DBConnection;
 import products.Product;
 
 import java.io.IOException;
@@ -49,6 +50,9 @@ public class ProductsServlet extends HttpServlet{
         }
         else if(action.equals("getProducts")){
             getProducts(request,response);
+        }
+        else if(action.equals("getProductsName")){
+            getProductsName(request,response);
         }
     }
     protected void addCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -108,6 +112,26 @@ public class ProductsServlet extends HttpServlet{
                 writer.write(jsonStr);
                 writer.flush();
             }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void getProductsName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            HttpSession session = request.getSession();
+            response.setContentType("application/json;charset=UTF-8");
+            request.setCharacterEncoding("UTF-8");
+            int id= Integer.parseInt(request.getParameter("id"));
+            DBConnection dbConnection=new DBConnection();
+            String sql="select ProductName from productinfo where ProductID="+id;
+            ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
+            dbConnection.close();
+            JsonObject jsonContainer =new JsonObject();
+            jsonContainer.addProperty("productName",rs.get(0).get("ProductName"));
+            PrintWriter writer = response.getWriter();
+            writer.write(new Gson().toJson(jsonContainer));
+            writer.flush();
         }
         catch (Exception e){
             e.printStackTrace();

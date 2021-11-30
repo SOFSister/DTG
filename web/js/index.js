@@ -35,7 +35,7 @@ function init() {
             alert("请求失败");
         }
     });
-    //如果登录了修改样式
+    //如果登录了获得username
     if(islogin){
         //查询名
         $.ajax({
@@ -56,6 +56,66 @@ function init() {
             }
         });
     }
+    //初始化商品个数
+    var data=getCartSessionJson();
+    for (var prop in data) {
+        var id = "";
+        for (var i = 0; i < prop.length; ++i) {
+            if (prop[i] == '!') {
+                break;
+            }
+            id += prop[i];
+        }
+        var num=Number(data[prop]);
+        var hasnum=Number($("#"+id).next().next().next().next().html());
+        $("#"+id).next().next().next().next().html(hasnum+num);
+    }
+    //初始化减少商品
+    $(".reduceBtn").click(function (){
+        //$("#reduceModal").modal("show");
+        //如果购买数量为0 不响应
+        var aimID=$(this).prev().prev().prev().attr("id");
+        var aimName=fromIdGetName(aimID);
+        $("#reduceTable").html("<tr>\n" +
+            "              <th>商品名</th>\n" +
+            "              <th>口味</th>\n" +
+            "              <th>数量</th>\n" +
+            "              <th>操作</th>\n" +
+            "            </tr>");
+        //console.log(aimID,aimName);
+        if($(this).next().html()==0){
+            return;
+        }
+        else{
+            //var data=getCartSessionJson();
+            for (var prop in data) {
+                var id = "";
+                var need = "";
+                var name = "";
+                var flag = false;
+                for (var i = 0; i < prop.length; ++i) {
+                    if (prop[i] == '!') {
+                        flag = true;
+                        continue;
+                    }
+                    if (!flag) {
+                        id += prop[i];
+                    } else {
+                        need += prop[i];
+                    }
+                }
+                if(id==aimID){
+                    $("#reduceTable").append("<tr>\n" +
+                        "              <td>"+aimName+"</td>\n" +
+                        "              <td>"+need+"</td>\n" +
+                        "              <td>"+data[prop]+"</td>\n" +
+                        "              <td><button class=\"doReduceBtn\">-1</button></td>\n" +
+                        "            </tr>");
+                }
+            }
+            $("#reduceModal").modal("show");
+        }
+    });
 }
 function getNeeds(values){
     var need="";
@@ -103,6 +163,103 @@ function getNeeds(values){
     }
     return need;
 }
+function getCartSessionJson(){
+    var jsonData;
+    $.ajax({
+        url: "ProductsServlet",
+        type: "POST",
+        data: {
+            "action":"getProducts",
+        },
+        async:false,
+        dataType: "json",
+        success: function (data){
+            jsonData=data;
+        },
+        error:function (){
+            alert("请求失败");
+        }
+    });
+    return jsonData;
+}
+function fromIdGetName(id){
+    var name;
+    $.ajax({
+        url: "ProductsServlet",
+        type: "POST",
+        data: {
+            "action":"getProductsName",
+            "id":id
+        },
+        async:false,
+        dataType: "json",
+        success: function (data){
+            var chats=eval(data);
+            name=chats.productName;
+        },
+        error:function (){
+            alert("请求失败");
+        }
+    });
+    return name;
+}
+function changeCart(data){
+    var sumCart=0;
+    var chats=eval(data);
+    if(chats.empty){
+        console.log("空");
+    }
+    else{
+        $("#cartItems").html("");
+        for (var prop in data){
+            var id="";
+            var need="";
+            var name="";
+            var flag=false;
+            for(var i=0;i<prop.length;++i){
+                if(prop[i]=='!'){
+                    flag=true;
+                    continue;
+                }
+                if(!flag){
+                    id+=prop[i];
+                }
+                else{
+                    need+=prop[i];
+                }
+            }
+            name=fromIdGetName(id);
+            sumCart+=data[prop];
+            $("#cartItems").append('<div class="cart'+id+'">\n' +
+                '                 <h3>\n' +
+                name                 +'\n' +
+                '                 </h3>\n' +
+                '                 <h5 style="display: inline-block;">'+need+'&nbsp;x</h5>\n' +
+                '                 <h4 style="display: inline-block;">'+data[prop]+'</h4>\n' +
+                '                 </div>\n' +
+                '                 <hr>');
+            $("")
+            //console.log("jsonObj[" + prop + "]=" + data[prop]);
+        }
+        $("#sumCart").html('购物车（'+sumCart+'）');
+    }
+    return sumCart;
+}
+function logout(){
+    $.ajax({
+        url: "LogoutServlet",
+        type: "POST",
+        data: {
+        },
+        async:false,
+        dataType: "text",
+        success: function (data){
+        },
+        error:function (){
+            alert("请求失败");
+        }
+    });
+}
 $(function () {
     //初始化
     init();
@@ -141,6 +298,7 @@ $(function () {
             dataType: "text",
             success: function (data){
                 console.log("成功");
+                window.location.reload();
             },
             error:function (){
                 alert("请求失败");
@@ -148,67 +306,28 @@ $(function () {
         });
     });
 
-    //减少商品
-
     //判断是否登录
     $("#cart").focus(function (){
         if(islogin){
             htmlStr='<span class="glyphicon glyphicon-user" aria-hidden="true">\n' +
-                '                                        <a href="LogoutServlet" class="text-black">注销&nbsp'+userName+'</a>\n' +
+                '                                        <a id="logoutBtn" href="LogoutServlet" class="text-black">注销&nbsp'+userName+'</a>\n' +
                 '                                    </span>';
             $("#loginChange").html(htmlStr);
+            $("#logoutBtn").click(logout);
         }
-        $.ajax({
-            url: "ProductsServlet",
-            type: "POST",
-            data: {
-                "action":"getProducts",
-            },
-            async:false,
-            dataType: "json",
-            success: function (data){
-                var chats=eval(data);
-                if(chats.empty){
-                   console.log("空");
-                }
-                else{
-                    $("#cartItems").html("");
-                    var sumCart=0;
-                    for (var prop in data){
-                        var id="";
-                        var need="";
-                        var flag=false;
-                        for(var i=0;i<prop.length;++i){
-                            if(prop[i]=='!'){
-                                flag=true;
-                                continue;
-                            }
-                            if(!flag){
-                                id+=prop[i];
-                            }
-                            else{
-                                need+=prop[i];
-                            }
-                        }
-                        sumCart+=data[prop];
-                        $("#cartItems").append('<div class="cart'+id+'">\n' +
-                            '                 <h3>\n' +
-                            '                 大排面\n' +
-                            '                 <button class="btn btn-default btn-xs div-line">\n' +
-                            '                 <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>\n' +
-                            '                 </button>\n' +
-                            '                 </h3>\n' +
-                            '                 <h5 style="display: inline-block;">'+need+'&nbsp;x</h5>\n' +
-                            '                 <h4 style="display: inline-block;">'+data[prop]+'</h4>\n' +
-                            '                 </div>\n' +
-                            '                 <hr>');
-                        //console.log("jsonObj[" + prop + "]=" + data[prop]);
-                    }
-                    $("#sumCart").html('购物车（'+sumCart+'）');
-                }
-            },
-            error:function (){
-                alert("请求失败");
+        data=getCartSessionJson();
+        //console.log(data);
+        var sumCart=changeCart(data);
+        $("#payBtn").click(function (){
+            //判断是否登录
+            if(loginID==""){
+                alert("请先登录");
+            }
+            else if(sumCart==0){
+                alert("请先添加商品");
+            }
+            else{
+
             }
         });
     });

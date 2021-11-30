@@ -1,4 +1,6 @@
-<%--
+<%@ page import="db.DBConnection" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.ArrayList" %><%--
   Created by IntelliJ IDEA.
   User: 87428
   Date: 2021/11/17
@@ -70,7 +72,7 @@
                                     <p style="padding-top:1rem;">你的购物车是空的</p>
                                 </div>
                                 <br>
-                                <button class="btn btn-primary" style="width:20rem;">结账</button>
+                                <button id="payBtn" class="btn btn-primary" style="width:20rem;">结账</button>
                                 <hr>
                                 <div>
                                     <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true">
@@ -173,21 +175,68 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="reduceModal" tabindex="-1" role="dialog" aria-labelledby="reduceModalLabel"
+       style="margin-top: 15rem;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div style="max-height: 50rem;overflow-y: auto">
+          <table id="reduceTable" class="table table-striped table-hover">
+            <tr>
+              <th>商品名</th>
+              <th>口味</th>
+              <th>数量</th>
+              <th>操作</th>
+            </tr>
+            <tr>
+              <td>大排面</td>
+              <td>11111</td>
+              <td>2</td>
+              <td><button class="doReduceBtn">-1</button></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container">
     <div class="row">
+      <%
+        DBConnection dbConnection=new DBConnection();
+        String sql="select * from productinfo";
+        ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
+        for (Map<String,String> item: rs) {
+          sql="select FilePath from productinfo,files where ProductImgName='"+item.get("ProductImgName")+"' and ProductImgName=FileName";
+          ArrayList<Map<String,String>> imgUrl=dbConnection.queryForList(sql);
+          if(item.get("ProductStatus").equals("禁用")){
+            continue;
+          }
+      %>
       <div class="col-sm-6 col-md-4">
         <div class="thumbnail">
-          <img src="images/野生桂鱼面.jpg" alt="...">
+          <img src="<%=imgUrl.get(0).get("FilePath")%>" alt="" style="height: 30rem;width: 30rem">
           <div class="caption text-center">
-            <h3 id="0">大排面</h3>
+            <h3 id="<%=item.get("ProductID")%>"><%=item.get("ProductName")%></h3>
             <p>
+              <%
+                int star= Integer.parseInt(item.get("ProductEvaluation"));
+                for(int i=0;i<star;++i){
+              %>
               <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+              <%
+                }
+              %>
+              <%
+                for(int i=star;i<5;++i){
+              %>
               <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
+              <%
+                }
+              %>
             </p>
-            <h4>￥16</h4>
+            <h4>￥<%=item.get("ProductPrice")%></h4>
+            <button class="btn btn-default reduceBtn" style="margin-right: 1rem;">
+              <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+            </button>
             <h4 style="display: inline-block;">0</h4>
             <button type="button" class="btn btn-default" style="margin-left: 1rem;" data-toggle="modal"
                     data-target="#myModal">
@@ -196,48 +245,10 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-6 col-md-4">
-        <div class="thumbnail">
-          <img class="img-size" src="images/大排面.jpg" alt="..." >
-          <div class="caption text-center">
-            <h3 id="1">小排面</h3>
-            <p>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-            </p>
-            <h4>￥16</h4>
-            <h4 style="display: inline-block;">0</h4>
-            <button type="button" class="btn btn-default" style="margin-left: 1rem;" data-toggle="modal"
-                    data-target="#myModal">
-              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-4">
-        <div class="thumbnail">
-          <img src="images/野生桂鱼面.jpg" alt="...">
-          <div class="caption text-center">
-            <h3 id="2">咸菜肉丝面</h3>
-            <p>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>
-            </p>
-            <h4>￥16</h4>
-            <h4 style="display: inline-block;">0</h4>
-            <button type="button" class="btn btn-default" style="margin-left: 1rem;" data-toggle="modal"
-                    data-target="#myModal">
-              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <%
+        }
+        dbConnection.close();
+      %>
     </div>
   </div>
 </section>
