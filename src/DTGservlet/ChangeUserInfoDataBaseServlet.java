@@ -199,7 +199,7 @@ public class ChangeUserInfoDataBaseServlet extends HttpServlet{
             ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
             int rsSize=rs.size();
             JsonObject jsonContainer =new JsonObject();
-            if(rsSize>0){
+            if(rsSize>0&&rs.get(0).get("IDStatus").equals("启用")){
                 jsonContainer.addProperty("isLogin",true);
                 HttpSession session=request.getSession();
                 session.setAttribute("loginedID",DtgID);
