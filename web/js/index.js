@@ -70,12 +70,13 @@ function init() {
         var hasnum=Number($("#"+id).next().next().next().next().html());
         $("#"+id).next().next().next().next().html(hasnum+num);
     }
+
     //初始化减少商品
     $(".reduceBtn").click(function (){
-        //$("#reduceModal").modal("show");
         //如果购买数量为0 不响应
         var aimID=$(this).prev().prev().prev().attr("id");
         var aimName=fromIdGetName(aimID);
+        var thisNum=$(this).next();
         $("#reduceTable").html("<tr>\n" +
             "              <th>商品名</th>\n" +
             "              <th>口味</th>\n" +
@@ -87,7 +88,7 @@ function init() {
             return;
         }
         else{
-            //var data=getCartSessionJson();
+            var data=getCartSessionJson();
             for (var prop in data) {
                 var id = "";
                 var need = "";
@@ -113,8 +114,52 @@ function init() {
                         "            </tr>");
                 }
             }
+            //减少商品
+            $(".doReduceBtn").click(function (){
+                var reduceOver=false;
+                $.ajax({
+                    url: "ProductsServlet",
+                    type: "POST",
+                    data: {
+                        "action":"reduceCart",
+                        "id":aimID,
+                        "need":need
+                    },
+                    async:false,
+                    dataType: "text",
+                    success: function (data){
+                        reduceOver=true;
+                        console.log("删了");
+                    },
+                    error:function (){
+                        alert("请求失败");
+                    }
+                });
+                if(reduceOver){
+                    var pdnum=Number($(this).parent().prev().html());
+                    pdnum--;
+                    if(pdnum==0){
+                        $(this).parent().parent().remove();
+                    }
+                    else{
+                        $(this).parent().prev().html(pdnum);
+                    }
+                    var hasnum=Number($(thisNum).html());
+                    $(thisNum).html(hasnum-1);
+                }
+            });
             $("#reduceModal").modal("show");
         }
+    });
+
+    //结账提交订单
+    $("#payModalOverBtn").click(function (){
+        //console.log("提交订单");
+
+        $("#payModalFooter").append('<div class="alert alert-success" role="alert"><strong>支付成功，</strong>小店正在快马加鞭制作中...</div>');
+        setTimeout(function (){
+            $("#payModal").modal("hide");
+        },2000);
     });
 }
 function getNeeds(values){
@@ -202,6 +247,27 @@ function fromIdGetName(id){
         }
     });
     return name;
+}
+function fromIdGetPrice(id){
+    var price;
+    $.ajax({
+        url: "ProductsServlet",
+        type: "POST",
+        data: {
+            "action":"getProductsPrice",
+            "id":id
+        },
+        async:false,
+        dataType: "json",
+        success: function (data){
+            var chats=eval(data);
+            price=chats.productPrice;
+        },
+        error:function (){
+            alert("请求失败");
+        }
+    });
+    return price;
 }
 function changeCart(data){
     var sumCart=0;
@@ -298,7 +364,7 @@ $(function () {
             dataType: "text",
             success: function (data){
                 console.log("成功");
-                window.location.reload();
+                //window.location.reload();
             },
             error:function (){
                 alert("请求失败");
@@ -327,7 +393,39 @@ $(function () {
                 alert("请先添加商品");
             }
             else{
-
+                var needPay=0;
+                var data=getCartSessionJson();
+                $("#payTable").html("<tr>\n" +
+                    "                <th>商品名</th>\n" +
+                    "                <th>口味</th>\n" +
+                    "                <th>数量</th>\n" +
+                    "              </tr>");
+                for (var prop in data) {
+                    var id = "";
+                    var need = "";
+                    var name = "";
+                    var flag = false;
+                    for (var i = 0; i < prop.length; ++i) {
+                        if (prop[i] == '!') {
+                            flag = true;
+                            continue;
+                        }
+                        if (!flag) {
+                            id += prop[i];
+                        } else {
+                            need += prop[i];
+                        }
+                    }
+                    name=fromIdGetName(id);
+                    $("#payTable").append("<tr>\n" +
+                        "              <td>"+name+"</td>\n" +
+                        "              <td>"+need+"</td>\n" +
+                        "              <td>"+data[prop]+"</td>\n" +
+                        "            </tr>");
+                    needPay+=Number(fromIdGetPrice(id))*Number(data[prop]);
+                }
+                $("#payModalTotalPrice").html(needPay);
+                $("#payModal").modal("show");
             }
         });
     });

@@ -179,21 +179,52 @@
        style="margin-top: 15rem;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div style="max-height: 50rem;overflow-y: auto">
-          <table id="reduceTable" class="table table-striped table-hover">
-            <tr>
-              <th>商品名</th>
-              <th>口味</th>
-              <th>数量</th>
-              <th>操作</th>
-            </tr>
-            <tr>
-              <td>大排面</td>
-              <td>11111</td>
-              <td>2</td>
-              <td><button class="doReduceBtn">-1</button></td>
-            </tr>
-          </table>
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">删除商品</h4>
+        </div>
+        <div class="modal-body">
+          <div style="max-height: 50rem;overflow-y: auto">
+            <table id="reduceTable" class="table table-striped table-hover">
+              <tr>
+                <th>商品名</th>
+                <th>口味</th>
+                <th>数量</th>
+                <th>操作</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">结束</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="reduceModalLabel"
+       style="margin-top: 15rem;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">安全支付</h4>
+        </div>
+        <div class="modal-body">
+          <div style="max-height: 50rem;overflow-y: auto">
+            <table id="payTable" class="table table-striped table-hover">
+              <tr>
+                <th>商品名</th>
+                <th>口味</th>
+                <th>数量</th>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div id="payModalFooter" class="modal-footer">
+          <h4 style="display: inline-block">共计</h4>
+          <h3 id="payModalTotalPrice" style="display: inline-block">10</h3>
+          <h4 style="display: inline-block">元</h4>
+          <button id="payModalOverBtn" type="button" class="btn btn-primary">确认付款</button>
         </div>
       </div>
     </div>

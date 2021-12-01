@@ -54,6 +54,12 @@ public class ProductsServlet extends HttpServlet{
         else if(action.equals("getProductsName")){
             getProductsName(request,response);
         }
+        else if(action.equals("getProductsPrice")){
+            getProductsPrice(request,response);
+        }
+        else if(action.equals("reduceCart")){
+            reduceCart(request,response);
+        }
     }
     protected void addCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -132,6 +138,50 @@ public class ProductsServlet extends HttpServlet{
             PrintWriter writer = response.getWriter();
             writer.write(new Gson().toJson(jsonContainer));
             writer.flush();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void getProductsPrice(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            HttpSession session = request.getSession();
+            response.setContentType("application/json;charset=UTF-8");
+            request.setCharacterEncoding("UTF-8");
+            int id= Integer.parseInt(request.getParameter("id"));
+            DBConnection dbConnection=new DBConnection();
+            String sql="select ProductPrice from productinfo where ProductID="+id;
+            ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
+            dbConnection.close();
+            JsonObject jsonContainer =new JsonObject();
+            jsonContainer.addProperty("productPrice",rs.get(0).get("ProductPrice"));
+            PrintWriter writer = response.getWriter();
+            writer.write(new Gson().toJson(jsonContainer));
+            writer.flush();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void reduceCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            HttpSession session = request.getSession();
+            request.setCharacterEncoding("UTF-8");
+            ArrayList<Product> products= (ArrayList<Product>) session.getAttribute("products");
+            int id= Integer.parseInt(request.getParameter("id"));
+            String need=request.getParameter("need");
+            Iterator<Product> iterator = products.iterator();
+            while (iterator.hasNext()){
+                Product val = iterator.next();
+                if(val.getId()==id&&val.getNeed().equals(need)){
+                    iterator.remove();
+                    break;
+                }
+            }
+            session.setAttribute("products",products);
+            /*for (Product val:products) {
+                System.out.println(val.getName());
+            }*/
         }
         catch (Exception e){
             e.printStackTrace();
