@@ -1,4 +1,8 @@
-<%--
+<%@ page import="db.DBConnection" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="jdk.nashorn.internal.runtime.linker.Bootstrap" %>
+<%@ page import="products.Product" %><%--
   Created by IntelliJ IDEA.
   User: 87428
   Date: 2021/11/17
@@ -31,24 +35,47 @@
         <li><a href="admOrder.jsp" id="selected">查看订单</a></li>
     </ul>
 </div>
+<%
+    DBConnection dbConnection=new DBConnection();
+    String sql="select * from orderlistinfo order by submitTime";
+    ArrayList<Map<String,String>> rs=dbConnection.queryForList(sql);
+    String nowOrderId="无";
+    String nowOrderDtgId="无";
+    String nowOrderTime="无";
+    String nowOrderMsg="无";
+    String nextOrderId="无";
+    String nextOrderMsg="无";
+    if(rs.size()>0){
+        Map<String,String> nowProduct=rs.get(0);
+        nowOrderId=nowProduct.get("id");
+        nowOrderDtgId=nowProduct.get("DtgID");
+        nowOrderTime=nowProduct.get("submitTime");
+        nowOrderMsg=nowProduct.get("productname")+"——"+nowProduct.get("mainMsg");
+    }
+    if(rs.size()>1){
+        Map<String,String> nextProduct=rs.get(1);
+        nextOrderId=nextProduct.get("id");
+        nextOrderMsg=nextProduct.get("productname")+"——"+nextProduct.get("mainMsg");
+    }
+%>
 <div class="container" id="main" style="overflow-y:auto;">
     <div class="jumbotron">
         <div class="container">
-            <div style="display: inline-block; width: 70%; border-right: 1px solid ">
+            <div style="display: inline-block; width: 60%; border-right: 1px solid ">
                 <h2>正在制作</h2>
                 <br>
-                <p>订单:&nbsp;1</p>
-                <p>顾客:&nbsp;874280179@qq.com</p>
-                <p>时间:&nbsp;2021年11月10日19时11分</p>
-                <p>详情:&nbsp;大排面——红烧加辣放糖加面</p>
+                <p>订单:&nbsp;<%=nowOrderId%></p>
+                <p>顾客:&nbsp;<%=nowOrderDtgId%></p>
+                <p>时间:&nbsp;<%=nowOrderTime%></p>
+                <p>详情: <%=nowOrderMsg%></p>
                 <br>
-                <button class="btn btn-primary">制作完成</button>
+                <button id="cookOverBtn" class="btn btn-primary">制作完成</button>
             </div>
             <div style="display: inline-block;">
                 <h2>下一个</h2>
                 <br>
-                <p>订单:&nbsp;1</p>
-                <p>详情:&nbsp;大排面——红烧加辣放糖加面</p>
+                <p>订单:&nbsp;<%=nextOrderId%></p>
+                <p>详情:&nbsp;<%=nextOrderMsg%></p>
             </div>
         </div>
     </div>
@@ -62,24 +89,19 @@
                 <th>下单时间</th>
                 <th>订单详情</th>
             </tr>
+            <%
+                for (Map<String,String> item: rs) {
+            %>
             <tr>
-                <td>1</td>
-                <td>874280179@qq.com</td>
-                <td>2021年11月10日19时11分</td>
-                <td>大排面——红烧加辣放糖加面</td>
+                <td><%=item.get("id")%></td>
+                <td><%=item.get("DtgID")%></td>
+                <td><%=item.get("submitTime")%></td>
+                <td><%=item.get("productname")+"——"+item.get("mainMsg")%></td>
             </tr>
-            <tr>
-                <td>2</td>
-                <td>874280179@qq.com</td>
-                <td>2021年11月10日19时11分</td>
-                <td>大排面——红烧加辣放糖加面</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>874280179@qq.com</td>
-                <td>2021年11月10日19时11分</td>
-                <td>大排面——红烧加辣放糖加面</td>
-            </tr>
+            <%
+                }
+                dbConnection.close();
+            %>
         </table>
     </div>
 </div>

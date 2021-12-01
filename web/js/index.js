@@ -155,11 +155,69 @@ function init() {
     //结账提交订单
     $("#payModalOverBtn").click(function (){
         //console.log("提交订单");
-
+        //后端提交订单
+        var data=getCartSessionJson();
+        for (var prop in data) {
+            var id = "";
+            var need = "";
+            var name = "";
+            var flag = false;
+            for (var i = 0; i < prop.length; ++i) {
+                if (prop[i] == '!') {
+                    flag = true;
+                    continue;
+                }
+                if (!flag) {
+                    id += prop[i];
+                } else {
+                    need += prop[i];
+                }
+            }
+            name=fromIdGetName(id);
+            submitOrders(loginID,name,need);
+        }
+        //前端提交订单
+        clearCart();
         $("#payModalFooter").append('<div class="alert alert-success" role="alert"><strong>支付成功，</strong>小店正在快马加鞭制作中...</div>');
         setTimeout(function (){
             $("#payModal").modal("hide");
+            window.location.reload();
         },2000);
+    });
+}
+function clearCart(){
+    $.ajax({
+        url: "ProductsServlet",
+        type: "POST",
+        data: {
+            "action":"clearCart",
+        },
+        async:false,
+        dataType: "text",
+        success: function (data){
+        },
+        error:function (){
+            alert("请求失败");
+        }
+    });
+}
+function submitOrders(DtgID,name,need){
+    $.ajax({
+        url: "OrderListInfoServlet",
+        type: "POST",
+        data: {
+            "action":"submitOrders",
+            "DtgID":DtgID,
+            "name":name,
+            "need":need
+        },
+        async:false,
+        dataType: "text",
+        success: function (data){
+        },
+        error:function (){
+            alert("请求失败");
+        }
     });
 }
 function getNeeds(values){
@@ -372,7 +430,7 @@ $(function () {
         });
     });
 
-    //判断是否登录
+    //点击购物车时
     $("#cart").focus(function (){
         if(islogin){
             htmlStr='<span class="glyphicon glyphicon-user" aria-hidden="true">\n' +

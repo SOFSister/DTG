@@ -60,6 +60,9 @@ public class ProductsServlet extends HttpServlet{
         else if(action.equals("reduceCart")){
             reduceCart(request,response);
         }
+        else if(action.equals("clearCart")){
+            clearCart(request,response);
+        }
     }
     protected void addCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -79,6 +82,15 @@ public class ProductsServlet extends HttpServlet{
             /*for (Product val:products) {
                 System.out.println(val.getName());
             }*/
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void clearCart(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            HttpSession session = request.getSession();
+            session.setAttribute("products",null);
         }
         catch (Exception e){
             e.printStackTrace();
